@@ -1,5 +1,6 @@
 import { SiteHeader } from "@/components/site-header";
 import { HeroSection } from "@/components/hero-section";
+import { ChatCTA } from "@/components/chat-cta";
 import { MaslowMethod } from "@/components/maslow-method";
 import { BudgetSimulator } from "@/components/budget-simulator";
 import { DashboardPreview } from "@/components/dashboard-preview";
@@ -15,6 +16,7 @@ export default function Page() {
         <SiteHeader />
         <main>
           <HeroSection />
+          <ChatCTA />
           <section id="metodo">
             <MaslowMethod />
           </section>
