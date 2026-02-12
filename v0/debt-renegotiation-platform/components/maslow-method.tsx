@@ -74,9 +74,7 @@ export function MaslowMethod() {
             {"O Método Maslow Financeiro"}
           </h2>
           <p className="mx-auto mt-3 max-w-lg text-muted-foreground">
-            {
-              "Priorize o essencial antes de negociar. Clique em cada camada para entender a lógica."
-            }
+            {"Priorize o essencial antes de negociar."}
           </p>
         </div>
 
