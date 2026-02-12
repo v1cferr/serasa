@@ -4,8 +4,9 @@ import {
   Home,
   ShieldCheck,
   Handshake,
-  Sparkles,
+  Target,
   ArrowDown,
+  MousePointerClick,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -67,7 +68,7 @@ export function MaslowMethod() {
         {/* Header */}
         <div className="text-center">
           <div className="mx-auto mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
-            <Sparkles className="h-5 w-5 text-primary" />
+            <Target className="h-5 w-5 text-primary" />
           </div>
           <h2 className="text-balance text-2xl font-bold text-foreground md:text-3xl">
             {"O Método Maslow Financeiro"}
@@ -80,7 +81,7 @@ export function MaslowMethod() {
         </div>
 
         {/* Pyramid + Detail panel */}
-        <div className="mt-14 flex flex-col items-center gap-10 lg:flex-row lg:items-start lg:justify-center lg:gap-16">
+        <div className="mt-14 flex flex-col items-start gap-10 lg:flex-row lg:justify-center lg:gap-16">
           {/* Pyramid */}
           <div
             className="flex w-full max-w-md flex-col items-center"
@@ -148,52 +149,56 @@ export function MaslowMethod() {
           </div>
 
           {/* Detail panel */}
-          <div className="w-full max-w-sm lg:sticky lg:top-24">
-            {active ? (
-              <div
-                id={`detail-${active.id}`}
-                className={`rounded-2xl border ${active.borderClass} ${active.lightBgClass} p-6 shadow-sm transition-all`}
-              >
-                <div className="flex items-center gap-3">
-                  <div
-                    className={`flex h-12 w-12 items-center justify-center rounded-xl ${active.bgClass}`}
-                  >
-                    <active.icon className={`h-6 w-6 ${active.textClass}`} />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-foreground">
-                      {active.label}
-                    </h3>
-                    <p
-                      className={`text-sm font-medium ${active.lightTextClass}`}
+          <div className="w-full max-w-sm lg:sticky lg:top-24 h-fit">
+            <div
+              className={`transition-all duration-300 ${active ? "opacity-100 translate-y-0" : "opacity-100"}`}
+            >
+              {active ? (
+                <div
+                  id={`detail-${active.id}`}
+                  className={`min-h-[300px] rounded-2xl border ${active.borderClass} ${active.lightBgClass} p-6 shadow-sm transition-all`}
+                >
+                  <div className="flex items-center gap-3">
+                    <div
+                      className={`flex h-12 w-12 items-center justify-center rounded-xl ${active.bgClass}`}
                     >
-                      {active.subtitle}
+                      <active.icon className={`h-6 w-6 ${active.textClass}`} />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-bold text-foreground">
+                        {active.label}
+                      </h3>
+                      <p
+                        className={`text-sm font-medium ${active.lightTextClass}`}
+                      >
+                        {active.subtitle}
+                      </p>
+                    </div>
+                  </div>
+                  <p className="mt-4 text-sm leading-relaxed text-foreground/80">
+                    {active.description}
+                  </p>
+                  <div
+                    className={`mt-4 rounded-xl ${active.bgClass}/10 px-4 py-3`}
+                  >
+                    <p
+                      className={`text-xs font-semibold ${active.lightTextClass}`}
+                    >
+                      {active.detail}
                     </p>
                   </div>
                 </div>
-                <p className="mt-4 text-sm leading-relaxed text-foreground/80">
-                  {active.description}
-                </p>
-                <div
-                  className={`mt-4 rounded-xl ${active.bgClass}/10 px-4 py-3`}
-                >
-                  <p
-                    className={`text-xs font-semibold ${active.lightTextClass}`}
-                  >
-                    {active.detail}
+              ) : (
+                <div className="flex min-h-[300px] flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-muted/30 px-6 py-12 text-center">
+                  <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-muted">
+                    <MousePointerClick className="h-5 w-5 text-muted-foreground" />
+                  </div>
+                  <p className="text-sm font-medium text-muted-foreground">
+                    {"Clique em uma camada da pirâmide para ver os detalhes"}
                   </p>
                 </div>
-              </div>
-            ) : (
-              <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-muted/30 px-6 py-12 text-center">
-                <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-muted">
-                  <Sparkles className="h-5 w-5 text-muted-foreground" />
-                </div>
-                <p className="text-sm font-medium text-muted-foreground">
-                  {"Clique em uma camada da pirâmide para ver os detalhes"}
-                </p>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         </div>
       </div>
