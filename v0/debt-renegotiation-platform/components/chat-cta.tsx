@@ -8,8 +8,8 @@ export function ChatCTA() {
   const { toggle } = useChat();
 
   return (
-    <section className="bg-primary/5 py-12 md:py-24">
-      <div className="container flex flex-col items-center text-center gap-6">
+    <section className="bg-primary/5 py-12 md:py-24 px-4 md:px-8 lg:px-16">
+      <div className="mx-auto max-w-6xl flex flex-col items-center text-center gap-6">
         <div className="rounded-full bg-primary/10 p-4">
           <MessageCircle className="h-10 w-10 text-primary" />
         </div>

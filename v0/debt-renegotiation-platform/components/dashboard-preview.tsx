@@ -7,8 +7,10 @@ const maxScore = 1000;
 const scorePercent = (score / maxScore) * 100;
 
 function getScoreColor(s: number) {
-  if (s >= 700) return { text: "text-success", bar: "bg-success", label: "Bom" };
-  if (s >= 400) return { text: "text-warning", bar: "bg-warning", label: "Regular" };
+  if (s >= 700)
+    return { text: "text-success", bar: "bg-success", label: "Bom" };
+  if (s >= 400)
+    return { text: "text-warning", bar: "bg-warning", label: "Regular" };
   return { text: "text-destructive", bar: "bg-destructive", label: "Atenção" };
 }
 
@@ -44,7 +46,7 @@ const offers = [
 export function DashboardPreview() {
   return (
     <section className="bg-background px-4 py-16 md:px-8 lg:px-16">
-      <div className="mx-auto max-w-5xl">
+      <div className="mx-auto max-w-6xl">
         <div className="text-center">
           <h2 className="text-balance text-2xl font-bold text-foreground md:text-3xl">
             {"Seu Painel Financeiro"}
@@ -120,8 +122,7 @@ export function DashboardPreview() {
                       {offer.creditor}
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      <span className="line-through">{offer.original}</span>
-                      {" "}
+                      <span className="line-through">{offer.original}</span>{" "}
                       <span className="font-bold text-success">
                         {offer.discounted}
                       </span>

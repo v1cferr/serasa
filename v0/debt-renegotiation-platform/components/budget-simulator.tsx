@@ -51,7 +51,7 @@ export function BudgetSimulator() {
 
   return (
     <section className="bg-card px-4 py-16 md:px-8 lg:px-16">
-      <div className="mx-auto max-w-5xl">
+      <div className="mx-auto max-w-6xl">
         <div className="text-center">
           <h2 className="text-balance text-2xl font-bold text-foreground md:text-3xl">
             {"Simulador Interativo"}

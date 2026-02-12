@@ -1,6 +1,12 @@
 "use client";
 
-import { Home, ShieldCheck, Handshake, Sparkles, ArrowDown } from "lucide-react";
+import {
+  Home,
+  ShieldCheck,
+  Handshake,
+  Sparkles,
+  ArrowDown,
+} from "lucide-react";
 import { useState } from "react";
 
 const layers = [
@@ -57,7 +63,7 @@ export function MaslowMethod() {
 
   return (
     <section className="bg-background px-4 py-20 md:px-8 lg:px-16">
-      <div className="mx-auto max-w-5xl">
+      <div className="mx-auto max-w-6xl">
         {/* Header */}
         <div className="text-center">
           <div className="mx-auto mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
@@ -67,24 +73,39 @@ export function MaslowMethod() {
             {"O Método Maslow Financeiro"}
           </h2>
           <p className="mx-auto mt-3 max-w-lg text-muted-foreground">
-            {"Priorize o essencial antes de negociar. Clique em cada camada para entender a lógica."}
+            {
+              "Priorize o essencial antes de negociar. Clique em cada camada para entender a lógica."
+            }
           </p>
         </div>
 
         {/* Pyramid + Detail panel */}
         <div className="mt-14 flex flex-col items-center gap-10 lg:flex-row lg:items-start lg:justify-center lg:gap-16">
           {/* Pyramid */}
-          <div className="flex w-full max-w-md flex-col items-center" role="list" aria-label="Pirâmide Maslow Financeiro">
+          <div
+            className="flex w-full max-w-md flex-col items-center"
+            role="list"
+            aria-label="Pirâmide Maslow Financeiro"
+          >
             {layers.map((layer, i) => {
               const isActive = activeLayer === layer.id;
               // Widths narrow toward top: 100%, 72%, 44%
-              const widthClass = i === 0 ? "w-[44%]" : i === 1 ? "w-[72%]" : "w-full";
+              const widthClass =
+                i === 0 ? "w-[44%]" : i === 1 ? "w-[72%]" : "w-full";
 
               return (
-                <div key={layer.id} className={`flex flex-col items-center ${i > 0 ? "-mt-1" : ""}`} style={{ width: "100%" }} role="listitem">
+                <div
+                  key={layer.id}
+                  className={`flex flex-col items-center ${i > 0 ? "-mt-1" : ""}`}
+                  style={{ width: "100%" }}
+                  role="listitem"
+                >
                   {/* Connector arrow */}
                   {i > 0 && (
-                    <ArrowDown className="mb-1 h-4 w-4 text-muted-foreground/40" aria-hidden="true" />
+                    <ArrowDown
+                      className="mb-1 h-4 w-4 text-muted-foreground/40"
+                      aria-hidden="true"
+                    />
                   )}
                   <button
                     type="button"
@@ -97,12 +118,18 @@ export function MaslowMethod() {
                     aria-expanded={isActive}
                     aria-controls={`detail-${layer.id}`}
                   >
-                    <layer.icon className={`h-6 w-6 shrink-0 ${isActive ? layer.textClass : layer.lightTextClass}`} />
+                    <layer.icon
+                      className={`h-6 w-6 shrink-0 ${isActive ? layer.textClass : layer.lightTextClass}`}
+                    />
                     <div className="text-left">
-                      <span className={`text-sm font-bold leading-tight md:text-base ${isActive ? layer.textClass : "text-foreground"}`}>
+                      <span
+                        className={`text-sm font-bold leading-tight md:text-base ${isActive ? layer.textClass : "text-foreground"}`}
+                      >
                         {layer.label}
                       </span>
-                      <span className={`block text-xs leading-tight md:text-sm ${isActive ? `${layer.textClass} opacity-80` : "text-muted-foreground"}`}>
+                      <span
+                        className={`block text-xs leading-tight md:text-sm ${isActive ? `${layer.textClass} opacity-80` : "text-muted-foreground"}`}
+                      >
                         {layer.subtitle}
                       </span>
                     </div>
@@ -112,7 +139,10 @@ export function MaslowMethod() {
             })}
 
             {/* Priority label */}
-            <p className="mt-5 text-center text-xs font-medium uppercase tracking-widest text-muted-foreground/60" aria-hidden="true">
+            <p
+              className="mt-5 text-center text-xs font-medium uppercase tracking-widest text-muted-foreground/60"
+              aria-hidden="true"
+            >
               {"Base = prioridade máxima"}
             </p>
           </div>
@@ -125,19 +155,31 @@ export function MaslowMethod() {
                 className={`rounded-2xl border ${active.borderClass} ${active.lightBgClass} p-6 shadow-sm transition-all`}
               >
                 <div className="flex items-center gap-3">
-                  <div className={`flex h-12 w-12 items-center justify-center rounded-xl ${active.bgClass}`}>
+                  <div
+                    className={`flex h-12 w-12 items-center justify-center rounded-xl ${active.bgClass}`}
+                  >
                     <active.icon className={`h-6 w-6 ${active.textClass}`} />
                   </div>
                   <div>
-                    <h3 className="text-lg font-bold text-foreground">{active.label}</h3>
-                    <p className={`text-sm font-medium ${active.lightTextClass}`}>{active.subtitle}</p>
+                    <h3 className="text-lg font-bold text-foreground">
+                      {active.label}
+                    </h3>
+                    <p
+                      className={`text-sm font-medium ${active.lightTextClass}`}
+                    >
+                      {active.subtitle}
+                    </p>
                   </div>
                 </div>
                 <p className="mt-4 text-sm leading-relaxed text-foreground/80">
                   {active.description}
                 </p>
-                <div className={`mt-4 rounded-xl ${active.bgClass}/10 px-4 py-3`}>
-                  <p className={`text-xs font-semibold ${active.lightTextClass}`}>
+                <div
+                  className={`mt-4 rounded-xl ${active.bgClass}/10 px-4 py-3`}
+                >
+                  <p
+                    className={`text-xs font-semibold ${active.lightTextClass}`}
+                  >
                     {active.detail}
                   </p>
                 </div>
