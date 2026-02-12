@@ -1,5 +1,10 @@
 import { useState } from "react";
-import { Plus, ArrowRight, SkipForward } from "lucide-react";
+import { Plus, ArrowRight, ArrowLeft, SkipForward } from "lucide-react";
+import wizardDivida from "@/assets/wizard-divida.jpg";
+import wizardRendaFixa from "@/assets/wizard-renda-fixa.jpg";
+import wizardRendaVariavel from "@/assets/wizard-renda-variavel.jpg";
+import wizardGastosFixos from "@/assets/wizard-gastos-fixos.jpg";
+import wizardGastosVariaveis from "@/assets/wizard-gastos-variaveis.jpg";
 
 interface FinancialData {
   divida: number;
@@ -19,6 +24,7 @@ const steps = [
     title: "Dívida Ativa",
     question: "Você possui alguma dívida ativa? Digite o valor:",
     description: "Dívida ativa é qualquer valor que você deve a terceiros — bancos, lojas, cartão de crédito, empréstimos, etc. Saber o total é o primeiro passo para se reorganizar.",
+    image: wizardDivida,
     multiple: false,
   },
   {
@@ -26,6 +32,7 @@ const steps = [
     title: "Renda Fixa",
     question: "Deseja adicionar alguma renda fixa?",
     description: "Renda fixa é todo valor que você recebe regularmente e de forma previsível: salário, aposentadoria, pensão, aluguéis recebidos, entre outros.",
+    image: wizardRendaFixa,
     multiple: true,
   },
   {
@@ -33,6 +40,7 @@ const steps = [
     title: "Renda Variável",
     question: "Deseja adicionar alguma renda variável?",
     description: "Renda variável inclui trabalho informal, freelances, comissões, gorjetas, renda extra e qualquer ganho sem valor fixo mensal.",
+    image: wizardRendaVariavel,
     multiple: true,
   },
   {
@@ -40,6 +48,7 @@ const steps = [
     title: "Gastos Fixos",
     question: "Deseja adicionar algum gasto fixo?",
     description: "Gastos fixos são despesas recorrentes com valor previsível: aluguel, educação, financiamentos, plano de saúde, IPVA, IPTU, entre outros.",
+    image: wizardGastosFixos,
     multiple: true,
   },
   {
@@ -47,6 +56,7 @@ const steps = [
     title: "Gastos Variáveis",
     question: "Deseja adicionar algum gasto variável?",
     description: "Gastos variáveis mudam a cada mês: água, luz, alimentação, higiene, lazer, saúde e outros custos do dia a dia.",
+    image: wizardGastosVariaveis,
     multiple: true,
   },
 ];
@@ -56,6 +66,12 @@ const formatCurrency = (val: string) => {
   const parsed = (parseInt(num || "0") / 100).toFixed(2);
   return parsed.replace(".", ",").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 };
+
+interface StepSnapshot {
+  data: FinancialData;
+  inputValue: string;
+  items: number[];
+}
 
 const FinancialWizard = ({ onComplete }: FinancialWizardProps) => {
   const [currentStep, setCurrentStep] = useState(0);
@@ -68,6 +84,7 @@ const FinancialWizard = ({ onComplete }: FinancialWizardProps) => {
   });
   const [inputValue, setInputValue] = useState("");
   const [items, setItems] = useState<number[]>([]);
+  const [history, setHistory] = useState<StepSnapshot[]>([]);
 
   const step = steps[currentStep];
 
@@ -79,16 +96,8 @@ const FinancialWizard = ({ onComplete }: FinancialWizardProps) => {
     }
   };
 
-  const handleNext = () => {
-    const num = parseFloat(inputValue.replace(/\./g, "").replace(",", ".")) || 0;
-
-    const newData = { ...data };
-    if (step.multiple) {
-      const allItems = num > 0 ? [...items, num] : items;
-      (newData as any)[step.key] = allItems;
-    } else {
-      (newData as any)[step.key] = num;
-    }
+  const saveAndAdvance = (newData: FinancialData) => {
+    setHistory([...history, { data: { ...data }, inputValue, items: [...items] }]);
     setData(newData);
 
     if (currentStep < steps.length - 1) {
@@ -100,6 +109,18 @@ const FinancialWizard = ({ onComplete }: FinancialWizardProps) => {
     }
   };
 
+  const handleNext = () => {
+    const num = parseFloat(inputValue.replace(/\./g, "").replace(",", ".")) || 0;
+    const newData = { ...data };
+    if (step.multiple) {
+      const allItems = num > 0 ? [...items, num] : items;
+      (newData as any)[step.key] = allItems;
+    } else {
+      (newData as any)[step.key] = num;
+    }
+    saveAndAdvance(newData);
+  };
+
   const handleSkip = () => {
     const newData = { ...data };
     if (step.multiple) {
@@ -107,15 +128,17 @@ const FinancialWizard = ({ onComplete }: FinancialWizardProps) => {
     } else {
       (newData as any)[step.key] = 0;
     }
-    setData(newData);
+    saveAndAdvance(newData);
+  };
 
-    if (currentStep < steps.length - 1) {
-      setCurrentStep(currentStep + 1);
-      setInputValue("");
-      setItems([]);
-    } else {
-      onComplete(newData);
-    }
+  const handleBack = () => {
+    if (history.length === 0) return;
+    const prev = history[history.length - 1];
+    setData(prev.data);
+    setInputValue(prev.inputValue);
+    setItems(prev.items);
+    setHistory(history.slice(0, -1));
+    setCurrentStep(currentStep - 1);
   };
 
   return (
@@ -186,6 +209,14 @@ const FinancialWizard = ({ onComplete }: FinancialWizardProps) => {
           </div>
 
           <div className="row flex-wrap mt-2">
+            {currentStep > 0 && (
+              <button
+                onClick={handleBack}
+                className="btn-serasa px-6 py-3 border border-border text-foreground font-medium flex items-center gap-2"
+              >
+                <ArrowLeft className="w-4 h-4" /> Voltar
+              </button>
+            )}
             <button
               onClick={handleNext}
               className="btn-serasa px-6 py-3 bg-primary text-primary-foreground font-medium flex items-center gap-2"
@@ -202,20 +233,22 @@ const FinancialWizard = ({ onComplete }: FinancialWizardProps) => {
           </div>
         </div>
 
-        {/* Right - Illustration */}
-        <div className="flex-1 bg-accent/50 rounded-lg p-6 flex flex-col items-center justify-center gap-4">
-          <div className="w-24 h-24 rounded-full bg-primary/20 flex items-center justify-center">
-            <span className="text-4xl">
-              {currentStep === 0 && "💳"}
-              {currentStep === 1 && "💰"}
-              {currentStep === 2 && "📊"}
-              {currentStep === 3 && "🏠"}
-              {currentStep === 4 && "🛒"}
-            </span>
+        {/* Right - Illustration with background image */}
+        <div
+          className="flex-1 rounded-lg overflow-hidden relative min-h-[280px] flex items-end"
+        >
+          <img
+            src={step.image}
+            alt={step.title}
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+          <div className="relative z-10 p-6">
+            <h4 className="text-lg font-bold text-white mb-2">{step.title}</h4>
+            <p className="text-sm text-white/90 leading-relaxed max-w-sm">
+              {step.description}
+            </p>
           </div>
-          <p className="text-sm text-muted-foreground text-center max-w-sm leading-relaxed">
-            {step.description}
-          </p>
         </div>
       </div>
     </div>

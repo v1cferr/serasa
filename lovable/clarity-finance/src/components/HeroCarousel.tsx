@@ -60,7 +60,7 @@ const HeroCarousel = () => {
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
-      <div className="w-full max-w-[1366px] relative overflow-hidden rounded-lg mx-4">
+      <div className="w-full max-w-full relative overflow-hidden">
         <div
           className="flex transition-transform duration-700 ease-in-out"
           style={{ transform: `translateX(-${current * 100}%)` }}
