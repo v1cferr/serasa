@@ -1,14 +1,16 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, TrendingUp } from "lucide-react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
+import { Slider } from "@/components/ui/slider";
 
 function formatBRL(value: number) {
   return new Intl.NumberFormat("pt-BR", {
     style: "currency",
     currency: "BRL",
     minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
   }).format(value);
 }
 
@@ -27,9 +29,9 @@ export function BudgetSimulator() {
 
     if (isOverBudget) {
       return [
-        { name: "Gastos Essenciais", value: essentials, color: "#FA1320" },
+        { name: "Comprometido", value: essentials, color: "#FA1320" },
         {
-          name: "Restante",
+          name: "Livre",
           value: Math.max(income - essentials, 0),
           color: "#F4F5F7",
         },
@@ -37,9 +39,9 @@ export function BudgetSimulator() {
     }
 
     return [
-      { name: "Necessidades (50%)", value: necessidades, color: "#1D4F91" },
-      { name: "Estilo de Vida (30%)", value: estiloDeVida, color: "#77127B" },
-      { name: "Disponível p/ Dívidas (20%)", value: dividas, color: "#0FAC67" },
+      { name: "50% Necessidades", value: necessidades, color: "#1D4F91" },
+      { name: "30% Estilo", value: estiloDeVida, color: "#77127B" },
+      { name: "20% Dívidas", value: dividas, color: "#0FAC67" },
     ];
   }, [income, essentials, isOverBudget]);
 
@@ -50,121 +52,112 @@ export function BudgetSimulator() {
   }, [income, essentials, isOverBudget]);
 
   return (
-    <section className="bg-card px-4 py-16 md:px-8 lg:px-16">
-      <div className="mx-auto max-w-6xl">
-        <div className="text-center">
-          <h2 className="text-balance text-2xl font-bold text-foreground md:text-3xl">
-            {"Simulador Interativo"}
-          </h2>
-          <p className="mt-2 text-muted-foreground">
-            {"Descubra quanto você pode destinar para renegociar."}
-          </p>
+    <section className="bg-card px-4 py-16 md:px-8 lg:px-16 border-t border-border/50">
+      <div className="mx-auto max-w-5xl">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-8 mb-10">
+          <div className="text-center md:text-left">
+            <h2 className="text-2xl font-bold text-experian-dark-blue dark:text-white">
+              Simule sua Capacidade
+            </h2>
+            <p className="text-muted-foreground mt-1">
+              Quanto você consegue pagar por mês?
+            </p>
+          </div>
+
+          {/* Outcome Badge */}
+          <div
+            className={`px-6 py-3 rounded-2xl flex items-center gap-3 shadow-sm ${!isOverBudget ? "bg-experian-alert-green/10 text-experian-alert-green" : "bg-experian-alert-red/10 text-experian-alert-red"}`}
+          >
+            {isOverBudget ? (
+              <>
+                <AlertTriangle className="w-6 h-6" />
+                <div className="text-left">
+                  <span className="block text-xs font-bold uppercase tracking-wider">
+                    Atenção
+                  </span>
+                  <span className="font-bold">Orçamento Crítico</span>
+                </div>
+              </>
+            ) : (
+              <>
+                <TrendingUp className="w-6 h-6" />
+                <div className="text-left">
+                  <span className="block text-xs font-bold uppercase tracking-wider text-experian-alert-green/80">
+                    Disponível para acordos
+                  </span>
+                  <span className="text-xl font-extrabold">
+                    {formatBRL(availableForDebt)}
+                  </span>
+                </div>
+              </>
+            )}
+          </div>
         </div>
 
-        <div className="mt-10 grid grid-cols-1 gap-8 lg:grid-cols-2">
-          {/* Input Area */}
-          <div className="flex flex-col gap-8 rounded-2xl bg-background p-6 md:p-8">
-            <div className="flex flex-col gap-3">
-              <label
-                htmlFor="income-slider"
-                className="flex items-center justify-between text-sm font-medium text-foreground"
-              >
-                <span>Renda Mensal</span>
-                <span className="text-lg font-bold text-primary">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+          {/* Controls */}
+          <div className="flex flex-col gap-8 bg-background p-6 rounded-2xl border shadow-sm">
+            <div className="space-y-4">
+              <div className="flex justify-between items-center">
+                <label className="text-sm font-semibold text-gray-600 dark:text-gray-300">
+                  Sua Renda
+                </label>
+                <span className="text-lg font-bold text-experian-dark-blue">
                   {formatBRL(income)}
                 </span>
-              </label>
-              <input
-                id="income-slider"
-                type="range"
-                min={500}
+              </div>
+              <Slider
+                value={[income]}
+                min={1000}
                 max={20000}
                 step={100}
-                value={income}
-                onChange={(e) => setIncome(Number(e.target.value))}
-                className="h-2 w-full cursor-pointer appearance-none rounded-full bg-muted accent-primary"
+                onValueChange={(vals) => setIncome(vals[0])}
+                className="py-2"
               />
-              <div className="flex justify-between text-xs text-muted-foreground">
-                <span>R$ 500</span>
-                <span>R$ 20.000</span>
-              </div>
             </div>
 
-            <div className="flex flex-col gap-3">
-              <label
-                htmlFor="essentials-slider"
-                className="flex items-center justify-between text-sm font-medium text-foreground"
-              >
-                <span>Gastos Essenciais</span>
+            <div className="space-y-4">
+              <div className="flex justify-between items-center">
+                <label className="text-sm font-semibold text-gray-600 dark:text-gray-300">
+                  Gastos Essenciais
+                </label>
                 <span
-                  className={`text-lg font-bold ${isOverBudget ? "text-destructive" : "text-secondary"}`}
+                  className={`text-lg font-bold ${isOverBudget ? "text-experian-alert-red" : "text-experian-light-blue"}`}
                 >
                   {formatBRL(essentials)}
                 </span>
-              </label>
-              <input
-                id="essentials-slider"
-                type="range"
-                min={200}
+              </div>
+              <Slider
+                value={[Math.min(essentials, income)]}
+                min={500}
                 max={income}
                 step={50}
-                value={Math.min(essentials, income)}
-                onChange={(e) => setEssentials(Number(e.target.value))}
-                className={`h-2 w-full cursor-pointer appearance-none rounded-full bg-muted ${isOverBudget ? "accent-[#FA1320]" : "accent-[#1D4F91]"}`}
+                onValueChange={(vals) => setEssentials(vals[0])}
+                className="py-2"
               />
-              <div className="flex justify-between text-xs text-muted-foreground">
-                <span>R$ 200</span>
-                <span>{formatBRL(income)}</span>
-              </div>
+              <p className="text-xs text-muted-foreground">
+                Dica: Tente manter seus gastos essenciais (aluguel, comida)
+                abaixo de 50% da renda.
+              </p>
             </div>
-
-            {isOverBudget && (
-              <div className="flex items-start gap-3 rounded-2xl bg-destructive/10 p-4">
-                <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-destructive" />
-                <div>
-                  <p className="text-sm font-semibold text-destructive">
-                    {"Foco em Renda Extra primeiro!"}
-                  </p>
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    {
-                      "Seus gastos essenciais ultrapassam 80% da renda. Priorize aumentar sua renda antes de negociar dívidas."
-                    }
-                  </p>
-                </div>
-              </div>
-            )}
-
-            {!isOverBudget && (
-              <div className="flex items-center justify-between rounded-2xl bg-success/10 p-4">
-                <span className="text-sm font-medium text-foreground">
-                  {"Disponível para dívidas:"}
-                </span>
-                <span className="text-xl font-bold text-success">
-                  {formatBRL(availableForDebt)}
-                </span>
-              </div>
-            )}
           </div>
 
-          {/* Chart Area */}
-          <div className="flex flex-col items-center justify-center rounded-2xl bg-background p-6 md:p-8">
-            <p className="mb-4 text-sm font-medium text-muted-foreground">
-              {"Regra 50-30-20"}
-            </p>
-            <ResponsiveContainer width="100%" height={280}>
+          {/* Visualization */}
+          <div className="flex flex-col items-center justify-center relative min-h-[250px]">
+            <ResponsiveContainer width="100%" height={260}>
               <PieChart>
                 <Pie
                   data={chartData}
                   cx="50%"
                   cy="50%"
-                  innerRadius={70}
-                  outerRadius={120}
-                  paddingAngle={3}
+                  innerRadius={65}
+                  outerRadius={100}
+                  paddingAngle={4}
                   dataKey="value"
                   strokeWidth={0}
                 >
-                  {chartData.map((entry) => (
-                    <Cell key={entry.name} fill={entry.color} />
+                  {chartData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
                 <Tooltip
@@ -177,14 +170,16 @@ export function BudgetSimulator() {
                 />
               </PieChart>
             </ResponsiveContainer>
-            <div className="mt-4 flex flex-wrap justify-center gap-4">
-              {chartData.map((entry) => (
-                <div key={entry.name} className="flex items-center gap-2">
-                  <span
-                    className="h-3 w-3 rounded-full"
+
+            {/* Legend */}
+            <div className="flex flex-wrap justify-center gap-4 mt-2">
+              {chartData.map((entry, i) => (
+                <div key={i} className="flex items-center gap-2">
+                  <div
+                    className="w-3 h-3 rounded-full"
                     style={{ backgroundColor: entry.color }}
                   />
-                  <span className="text-xs text-muted-foreground">
+                  <span className="text-xs font-medium text-gray-600 dark:text-gray-400">
                     {entry.name}
                   </span>
                 </div>

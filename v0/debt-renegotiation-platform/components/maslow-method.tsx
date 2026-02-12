@@ -7,197 +7,157 @@ import {
   Target,
   ArrowDown,
   MousePointerClick,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react";
 import { useState } from "react";
+import { cn } from "@/lib/utils";
 
 const layers = [
   {
     id: "acordo",
     level: 3,
     icon: Handshake,
-    label: "Acordo Justo",
-    subtitle: "Negociação de dívidas",
+    label: "3. Negociação",
+    subtitle: "Acordos sustentáveis",
     description:
-      "O valor restante do orçamento, após cobrir necessidades e segurança, é direcionado para renegociar dívidas de forma sustentável.",
-    detail: "Parcelas que cabem no bolso, sem comprometer o essencial.",
-    bgClass: "bg-primary",
-    textClass: "text-primary-foreground",
-    lightBgClass: "bg-primary/10",
-    lightTextClass: "text-primary",
-    borderClass: "border-primary/30",
+      "Com o básico e a reserva garantidos, use o excedente para quitar dívidas sem gerar novas.",
+    bgClass: "bg-experian-magenta",
+    textClass: "text-white",
+    borderClass: "border-experian-magenta/30",
   },
   {
     id: "seguranca",
     level: 2,
     icon: ShieldCheck,
-    label: "Segurança",
+    label: "2. Segurança",
     subtitle: "Reserva de emergência",
     description:
-      "Antes de negociar qualquer dívida, é preciso ter uma pequena reserva para imprevistos como saúde e reparos urgentes.",
-    detail: "Mínimo recomendado: 1 mês de gastos essenciais.",
-    bgClass: "bg-success",
-    textClass: "text-success-foreground",
-    lightBgClass: "bg-success/10",
-    lightTextClass: "text-success",
-    borderClass: "border-success/30",
+      "Tenha um fundo para imprevistos (ex: saúde, reparos) antes de comprometer sua renda com parcelas.",
+    bgClass: "bg-experian-purple",
+    textClass: "text-white",
+    borderClass: "border-experian-purple/30",
   },
   {
     id: "basico",
     level: 1,
     icon: Home,
-    label: "Básico Garantido",
-    subtitle: "Moradia e alimentação",
+    label: "1. Básico",
+    subtitle: "Sobrevivência",
     description:
-      "A base da pirâmide representa o que não pode ser comprometido: aluguel, mercado, contas de água e luz, e transporte.",
-    detail: "Sua sobrevivência vem antes de qualquer dívida.",
-    bgClass: "bg-secondary",
-    textClass: "text-secondary-foreground",
-    lightBgClass: "bg-secondary/10",
-    lightTextClass: "text-secondary",
-    borderClass: "border-secondary/30",
+      "Sua prioridade zero: Aluguel, luz, água e comida na mesa. Garanta isso antes de tudo.",
+    bgClass: "bg-experian-dark-blue",
+    textClass: "text-white",
+    borderClass: "border-experian-dark-blue/30",
   },
 ];
 
 export function MaslowMethod() {
-  const [activeLayer, setActiveLayer] = useState<string | null>(null);
-  const active = layers.find((l) => l.id === activeLayer) ?? null;
+  const [activeLayer, setActiveLayer] = useState<string | null>("basico"); // Default to base open on mobile often helps or keep closed
 
   return (
-    <section className="bg-background px-4 py-20 md:px-8 lg:px-16">
-      <div className="mx-auto max-w-6xl">
-        {/* Header */}
-        <div className="text-center">
-          <div className="mx-auto mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
-            <Target className="h-5 w-5 text-primary" />
+    <section className="bg-background px-4 py-16 md:px-8 lg:px-16">
+      <div className="mx-auto max-w-5xl">
+        <div className="text-center mb-10">
+          <div className="inline-flex items-center justify-center p-3 rounded-full bg-experian-magenta/10 mb-4">
+            <Target className="h-6 w-6 text-experian-magenta" />
           </div>
-          <h2 className="text-balance text-2xl font-bold text-foreground md:text-3xl">
-            {"O Método Maslow Financeiro"}
+          <h2 className="text-3xl font-bold text-experian-dark-blue dark:text-white mb-3">
+            Prioridades Claras
           </h2>
-          <p className="mx-auto mt-3 max-w-lg text-muted-foreground">
-            {"Priorize o essencial antes de negociar."}
+          <p className="text-muted-foreground max-w-lg mx-auto text-lg">
+            Não negocie dívidas se faltar o básico. Siga a ordem:
           </p>
         </div>
 
-        {/* Pyramid + Detail panel */}
-        <div className="mt-14 flex flex-col items-start gap-10 lg:flex-row lg:justify-center lg:gap-16">
-          {/* Pyramid */}
-          <div
-            className="flex w-full max-w-md flex-col items-center"
-            role="list"
-            aria-label="Pirâmide Maslow Financeiro"
-          >
-            {layers.map((layer, i) => {
+        <div className="flex flex-col items-center gap-6">
+          {/* Pyramid Construction */}
+          <div className="w-full max-w-md flex flex-col items-center gap-2">
+            {layers.map((layer, index) => {
               const isActive = activeLayer === layer.id;
-              // Widths narrow toward top: 100%, 72%, 44%
               const widthClass =
-                i === 0 ? "w-[44%]" : i === 1 ? "w-[72%]" : "w-full";
+                index === 0 ? "w-[60%]" : index === 1 ? "w-[80%]" : "w-full";
 
               return (
                 <div
                   key={layer.id}
-                  className={`flex flex-col items-center ${i > 0 ? "-mt-1" : ""}`}
-                  style={{ width: "100%" }}
-                  role="listitem"
+                  className="w-full flex flex-col items-center group"
                 >
-                  {/* Connector arrow */}
-                  {i > 0 && (
-                    <ArrowDown
-                      className="mb-1 h-4 w-4 text-muted-foreground/40"
-                      aria-hidden="true"
-                    />
+                  {/* Connector */}
+                  {index > 0 && (
+                    <ArrowDown className="h-4 w-4 text-gray-300 mb-1" />
                   )}
+
                   <button
-                    type="button"
                     onClick={() => setActiveLayer(isActive ? null : layer.id)}
-                    className={`${widthClass} group relative mx-auto flex items-center justify-center gap-3 rounded-2xl px-5 py-5 transition-all md:py-6 ${
+                    className={cn(
+                      widthClass,
+                      "relative flex items-center justify-between px-6 py-4 rounded-xl transition-all duration-300 shadow-sm border",
                       isActive
-                        ? `${layer.bgClass} ${layer.textClass} shadow-lg scale-[1.03]`
-                        : `border ${layer.borderClass} ${layer.lightBgClass} hover:shadow-md`
-                    }`}
-                    aria-expanded={isActive}
-                    aria-controls={`detail-${layer.id}`}
+                        ? cn(
+                            layer.bgClass,
+                            layer.textClass,
+                            "shadow-xl scale-105 z-10 border-transparent",
+                          )
+                        : "bg-card border-gray-200 hover:border-experian-dark-blue/30 hover:shadow-md",
+                    )}
                   >
-                    <layer.icon
-                      className={`h-6 w-6 shrink-0 ${isActive ? layer.textClass : layer.lightTextClass}`}
-                    />
-                    <div className="text-left">
-                      <span
-                        className={`text-sm font-bold leading-tight md:text-base ${isActive ? layer.textClass : "text-foreground"}`}
-                      >
-                        {layer.label}
-                      </span>
-                      <span
-                        className={`block text-xs leading-tight md:text-sm ${isActive ? `${layer.textClass} opacity-80` : "text-muted-foreground"}`}
-                      >
-                        {layer.subtitle}
-                      </span>
+                    <div className="flex items-center gap-3">
+                      <layer.icon
+                        className={cn(
+                          "h-5 w-5",
+                          isActive ? "text-white" : "text-experian-dark-blue",
+                        )}
+                      />
+                      <div className="text-left">
+                        <span
+                          className={cn(
+                            "block font-bold",
+                            isActive
+                              ? "text-white"
+                              : "text-gray-800 dark:text-gray-200",
+                          )}
+                        >
+                          {layer.label}
+                        </span>
+                        <span
+                          className={cn(
+                            "text-xs opacity-90",
+                            isActive ? "text-white/80" : "text-gray-500",
+                          )}
+                        >
+                          {layer.subtitle}
+                        </span>
+                      </div>
                     </div>
+                    {isActive ? (
+                      <ChevronUp className="h-4 w-4" />
+                    ) : (
+                      <ChevronDown className="h-4 w-4 text-gray-400" />
+                    )}
                   </button>
-                </div>
-              );
-            })}
 
-            {/* Priority label */}
-            <p
-              className="mt-5 text-center text-xs font-medium uppercase tracking-widest text-muted-foreground/60"
-              aria-hidden="true"
-            >
-              {"Base = prioridade máxima"}
-            </p>
-          </div>
-
-          {/* Detail panel */}
-          <div className="w-full max-w-sm lg:sticky lg:top-24 h-fit">
-            <div
-              className={`transition-all duration-300 ${active ? "opacity-100 translate-y-0" : "opacity-100"}`}
-            >
-              {active ? (
-                <div
-                  id={`detail-${active.id}`}
-                  className={`min-h-[300px] rounded-2xl border ${active.borderClass} ${active.lightBgClass} p-6 shadow-sm transition-all`}
-                >
-                  <div className="flex items-center gap-3">
-                    <div
-                      className={`flex h-12 w-12 items-center justify-center rounded-xl ${active.bgClass}`}
-                    >
-                      <active.icon className={`h-6 w-6 ${active.textClass}`} />
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-bold text-foreground">
-                        {active.label}
-                      </h3>
-                      <p
-                        className={`text-sm font-medium ${active.lightTextClass}`}
-                      >
-                        {active.subtitle}
-                      </p>
-                    </div>
-                  </div>
-                  <p className="mt-4 text-sm leading-relaxed text-foreground/80">
-                    {active.description}
-                  </p>
+                  {/* Mobile/Inline Detail View - Expandable */}
                   <div
-                    className={`mt-4 rounded-xl ${active.bgClass}/10 px-4 py-3`}
+                    className={cn(
+                      "w-full transition-all duration-300 ease-in-out overflow-hidden bg-gray-50 dark:bg-experian-navy/20 rounded-b-xl -mt-2 pt-4 px-6 border-x border-b border-gray-100 dark:border-white/5",
+                      isActive
+                        ? "max-h-40 opacity-100 pb-4 mb-2"
+                        : "max-h-0 opacity-0",
+                    )}
                   >
-                    <p
-                      className={`text-xs font-semibold ${active.lightTextClass}`}
-                    >
-                      {active.detail}
+                    <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+                      {layer.description}
                     </p>
                   </div>
                 </div>
-              ) : (
-                <div className="flex min-h-[300px] flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-muted/30 px-6 py-12 text-center">
-                  <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-muted">
-                    <MousePointerClick className="h-5 w-5 text-muted-foreground" />
-                  </div>
-                  <p className="text-sm font-medium text-muted-foreground">
-                    {"Clique em uma camada da pirâmide para ver os detalhes"}
-                  </p>
-                </div>
-              )}
-            </div>
+              );
+            })}
           </div>
+
+          <p className="text-xs font-semibold uppercase tracking-wider text-gray-400 mt-4">
+            Base = O mais importante
+          </p>
         </div>
       </div>
     </section>

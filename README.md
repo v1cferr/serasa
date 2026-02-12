@@ -15,6 +15,9 @@
 - manter o carrosel de hero section
 - manter as informações adicionais extras nas 3 ultimas sections
 
+<https://docs.google.com/document/d/1Yvxiy_W3TmeMQIwK8U_c9uogQAsl4ohzeimCI0-cXRw/edit?usp=sharing>
+-prompt inicial unido da landpage
+
 ## Guilherme
 
 ## Lucas
