@@ -14,12 +14,13 @@ import { ChatProvider } from "@/components/chat-context";
 import { SiteFooter } from "@/components/site-footer";
 import { FinancialResults } from "@/components/financial-results";
 import { Button } from "@/components/ui/button";
+import EducationSections from "@/components/education-sections";
 
 export default function Page() {
   const [financialData, setFinancialData] = useState<any>(null);
 
   return (
-    <ChatProvider>
+    <ChatProvider financialData={financialData}>
       <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
         <SiteHeader />
         <main>
@@ -44,16 +45,17 @@ export default function Page() {
             )}
           </div>
 
-          <ChatCTA />
-          <section id="metodo">
-            <MaslowMethod />
-          </section>
-          <section id="simulador">
-            <BudgetSimulator />
-          </section>
           <section id="dashboard">
             <DashboardPreview />
           </section>
+          <ChatCTA />
+          {/* <section id="metodo">
+            <MaslowMethod />
+          </section> */}
+          <section id="simulador">
+            <BudgetSimulator />
+          </section>
+          <EducationSections />
         </main>
         <SiteFooter />
         <FloatingActionButton />

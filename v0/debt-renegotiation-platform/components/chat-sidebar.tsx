@@ -9,7 +9,7 @@ import {
   SheetTitle,
   SheetDescription,
 } from "@/components/ui/sheet";
-import { useChat } from "@/components/chat-context";
+import { useChat, type FinancialData } from "@/components/chat-context";
 
 interface ChatMessage {
   id: string;
@@ -31,6 +31,47 @@ const SUGGESTIONS = [
   { label: "Score", prompt: "Como funciona o score de saúde financeira?" },
 ];
 
+const fmt = (v: number) =>
+  `R$ ${v.toFixed(2).replace(".", ",").replace(/\B(?=(\d{3})+(?!\d))/g, ".")}`;
+
+function generateAnalysis(data: FinancialData): string[] {
+  const totalRendaFixa = data.rendaFixa.reduce((a, b) => a + b, 0);
+  const totalRendaVariavel = data.rendaVariavel.reduce((a, b) => a + b, 0);
+  const totalRenda = totalRendaFixa + totalRendaVariavel;
+  const totalGastosFixos = data.gastosFixos.reduce((a, b) => a + b, 0);
+  const totalGastosVariaveis = data.gastosVariaveis.reduce((a, b) => a + b, 0);
+  const totalGastos = totalGastosFixos + totalGastosVariaveis;
+  const sobra = totalRenda - totalGastos;
+
+  const tips: string[] = [];
+
+  if (totalRenda === 0) {
+    return ["Você não cadastrou nenhuma renda. Cadastre seus dados na seção anterior para uma análise completa."];
+  }
+
+  const percFixos = (totalGastosFixos / totalRenda) * 100;
+  const percVariaveis = (totalGastosVariaveis / totalRenda) * 100;
+
+  tips.push(`Analisei seus dados: Sua renda total é ${fmt(totalRenda)}. Seus gastos fixos levam ${percFixos.toFixed(1)}% e os variáveis ${percVariaveis.toFixed(1)}%.`);
+
+  if (percFixos > 50) {
+    tips.push(`⚠️ Atenção: Seus gastos fixos (${percFixos.toFixed(1)}%) estão acima do ideal de 50%. Isso pressiona seu orçamento.`);
+  }
+
+  if (percVariaveis > 30) {
+    tips.push(`⚠️ Seus gastos variáveis (${percVariaveis.toFixed(1)}%) ultrapassam os 30% recomendados. Que tal rever assinaturas ou lazer?`);
+  }
+
+  if (sobra < 0) {
+    tips.push(`🔴 Alerta Vermelho: Você está gastando ${fmt(Math.abs(sobra))} a mais do que ganha. Vamos priorizar o essencial (Maslow) e cortar o resto?`);
+  } else if (sobra > 0 && data.divida > 0) {
+    const meses = Math.ceil(data.divida / sobra);
+    tips.push(`💡 Boa notícia: Com sua sobra de ${fmt(sobra)}/mês, você pode quitar sua dívida de ${fmt(data.divida)} em cerca de ${meses} meses (se usar tudo para isso).`);
+  }
+
+  return tips;
+}
+
 function getBotReply(userMessage: string): string {
   const lower = userMessage.toLowerCase();
 
@@ -46,9 +87,10 @@ function getBotReply(userMessage: string): string {
   if (
     lower.includes("maslow") ||
     lower.includes("método") ||
-    lower.includes("metodo")
+    lower.includes("metodo") ||
+    lower.includes("vital")
   ) {
-    return "O Método Maslow Financeiro tem 3 etapas:\n\n1. **Garantir o Básico** -- Aluguel e mercado ficam protegidos.\n2. **Criar Segurança** -- Uma reserva de emergência para imprevistos.\n3. **Acordo Justo** -- Somente o que sobra vai para dívidas.\n\nIsso garante que você nunca comprometa o essencial ao negociar.";
+    return "O Método VITAL (baseado em Maslow) tem 3 etapas:\n\n1. **Garantir o Básico** -- Aluguel e mercado ficam protegidos.\n2. **Criar Segurança** -- Uma reserva de emergência para imprevistos.\n3. **Acordo Justo** -- Somente o que sobra vai para dívidas.\n\nIsso garante que você nunca comprometa o essencial ao negociar.";
   }
 
   if (
@@ -85,10 +127,11 @@ function getBotReply(userMessage: string): string {
 }
 
 export function ChatSidebar() {
-  const { isOpen, setIsOpen } = useChat();
+  const { isOpen, setIsOpen, financialData } = useChat();
   const [messages, setMessages] = useState<ChatMessage[]>([INITIAL_MESSAGE]);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+  const [hasAnalyzed, setHasAnalyzed] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -105,6 +148,32 @@ export function ChatSidebar() {
       setTimeout(() => inputRef.current?.focus(), 300);
     }
   }, [isOpen]);
+
+  // Smart Analysis Effect
+  useEffect(() => {
+    if (financialData && !hasAnalyzed && isOpen) {
+      const tips = generateAnalysis(financialData);
+
+      const analysisMessages: ChatMessage[] = tips.map((tip, i) => ({
+        id: `analysis-${Date.now()}-${i}`,
+        role: "assistant",
+        content: tip,
+      }));
+
+      // Add a small delay for natural feeling
+      setTimeout(() => {
+        setMessages(prev => [...prev, ...analysisMessages]);
+        setHasAnalyzed(true);
+      }, 500);
+    }
+  }, [financialData, isOpen, hasAnalyzed]);
+
+  // Reset analysis if data is cleared (optional, depends on if financialData becomes null)
+  useEffect(() => {
+    if (!financialData) {
+      setHasAnalyzed(false);
+    }
+  }, [financialData]);
 
   const handleSend = useCallback(
     (text?: string) => {
@@ -170,11 +239,10 @@ export function ChatSidebar() {
                     </div>
                   )}
                   <div
-                    className={`rounded-2xl px-4 py-3 text-sm leading-relaxed ${
-                      msg.role === "user"
+                    className={`rounded-2xl px-4 py-3 text-sm leading-relaxed ${msg.role === "user"
                         ? "bg-primary text-primary-foreground"
                         : "bg-muted text-foreground"
-                    }`}
+                      }`}
                   >
                     {msg.content.split("\n").map((line, i) => (
                       <span key={`${msg.id}-${i}`}>
