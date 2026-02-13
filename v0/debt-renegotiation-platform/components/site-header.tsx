@@ -35,7 +35,7 @@ export function SiteHeader() {
               <Logo className="h-7 w-7 text-primary" />
             </div>
             <span className="text-lg font-bold text-foreground">
-              Serasa <span className="text-primary">Humanizado</span>
+              VITAL
             </span>
           </a>
         </div>

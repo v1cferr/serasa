@@ -9,12 +9,12 @@ export function SiteFooter() {
             <Logo className="h-5 w-5 text-secondary-foreground" />
           </div>
           <span className="text-sm font-bold text-secondary-foreground">
-            Serasa Humanizado
+            VITAL
           </span>
         </div>
         <p className="text-center text-xs text-secondary-foreground/70">
           {
-            "Serasa Humanizado é uma iniciativa educacional. Não somos a Serasa Experian. Consulte sempre os canais oficiais."
+            "VITAL é uma iniciativa educacional. Não somos a Serasa Experian. Consulte sempre os canais oficiais."
           }
         </p>
         <p className="text-xs text-secondary-foreground/50">

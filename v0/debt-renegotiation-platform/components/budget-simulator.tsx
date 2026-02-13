@@ -39,9 +39,9 @@ export function BudgetSimulator() {
     }
 
     return [
-      { name: "50% Necessidades", value: necessidades, color: "#1D4F91" },
+      { name: "50% Sobrevivência", value: necessidades, color: "#1D4F91" },
       { name: "30% Estilo", value: estiloDeVida, color: "#77127B" },
-      { name: "20% Dívidas", value: dividas, color: "#0FAC67" },
+      { name: "20% Saneamento", value: dividas, color: "#0FAC67" },
     ];
   }, [income, essentials, isOverBudget]);
 
@@ -137,7 +137,7 @@ export function BudgetSimulator() {
               />
               <p className="text-xs text-muted-foreground">
                 Dica: Tente manter seus gastos essenciais (aluguel, comida)
-                abaixo de 50% da renda.
+                dentro do Índice de Sobrevivência.
               </p>
             </div>
           </div>

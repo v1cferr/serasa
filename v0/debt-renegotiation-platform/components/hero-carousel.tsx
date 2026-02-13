@@ -20,7 +20,7 @@ const slides = [
     {
         title: "Assistente Financeiro",
         subtitle: "Nosso chatbot analisa sua situação",
-        description: "Receba dicas personalizadas para reorganizar suas finanças usando a regra 50/30/20.",
+        description: "Receba dicas personalizadas para reorganizar suas finanças usando o Índice de Sobrevivência.",
         bg: "from-experian-magenta/80 to-experian-navy/70",
     },
     {

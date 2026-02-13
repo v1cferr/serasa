@@ -9,7 +9,7 @@ export function HeroSection() {
       <div className="mx-auto flex max-w-6xl flex-col items-center gap-10 lg:flex-row lg:gap-16">
         <div className="flex flex-1 flex-col items-center text-center lg:items-start lg:text-left">
           <span className="mb-4 inline-block rounded-full bg-primary/10 px-4 py-1.5 text-sm font-medium text-primary">
-            Renegociação Humanizada
+            Cálculo Vital
           </span>
           <h1 className="text-balance text-4xl font-bold leading-tight tracking-tight text-foreground md:text-5xl lg:text-6xl">
             Renegocie sem comprometer seu sustento.

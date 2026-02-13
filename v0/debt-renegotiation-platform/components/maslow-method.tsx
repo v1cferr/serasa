@@ -63,10 +63,10 @@ export function MaslowMethod() {
             <Target className="h-6 w-6 text-experian-magenta" />
           </div>
           <h2 className="text-3xl font-bold text-experian-dark-blue dark:text-white mb-3">
-            Prioridades Claras
+            Prioridades do Método VITAL
           </h2>
           <p className="text-muted-foreground max-w-lg mx-auto text-lg">
-            Não negocie dívidas se faltar o básico. Siga a ordem:
+            Não inicie o Saneamento Financeiro sem garantir sua Sobrevivência. Siga a ordem:
           </p>
         </div>
 
@@ -95,10 +95,10 @@ export function MaslowMethod() {
                       "relative flex items-center justify-between px-6 py-4 rounded-xl transition-all duration-300 shadow-sm border",
                       isActive
                         ? cn(
-                            layer.bgClass,
-                            layer.textClass,
-                            "shadow-xl scale-105 z-10 border-transparent",
-                          )
+                          layer.bgClass,
+                          layer.textClass,
+                          "shadow-xl scale-105 z-10 border-transparent",
+                        )
                         : "bg-card border-gray-200 hover:border-experian-dark-blue/30 hover:shadow-md",
                     )}
                   >

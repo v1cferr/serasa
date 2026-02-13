@@ -53,7 +53,7 @@ export function FinancialResults({ data }: { data: FinancialData }) {
   const pieData = [
     { name: "Gastos Fixos", value: totalGastosFixos },
     { name: "Gastos Variáveis", value: totalGastosVariaveis },
-    { name: sobra >= 0 ? "Sobra" : "Déficit", value: Math.abs(sobra) },
+    { name: sobra >= 0 ? "Margem de Segurança" : "Déficit", value: Math.abs(sobra) },
   ];
 
   const barData = [
@@ -99,7 +99,7 @@ export function FinancialResults({ data }: { data: FinancialData }) {
             color: "text-orange-600",
           },
           {
-            label: sobra >= 0 ? "Sobra" : "Déficit",
+            label: sobra >= 0 ? "Margem de Segurança" : "Déficit",
             value: fmt(Math.abs(sobra)),
             color: sobra >= 0 ? "text-green-600" : "text-red-600",
           },
@@ -165,7 +165,7 @@ export function FinancialResults({ data }: { data: FinancialData }) {
         <Card className="shadow-md">
           <CardHeader>
             <CardTitle className="text-xl font-bold text-center">
-              Regra 50/30/20
+              Índice de Sobrevivência
             </CardTitle>
           </CardHeader>
           <CardContent>

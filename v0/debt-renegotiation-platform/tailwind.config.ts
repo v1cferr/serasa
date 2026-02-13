@@ -11,7 +11,7 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['var(--font-inter)'],
+        sans: ['var(--font-roboto)', 'Arial', 'sans-serif'],
       },
       colors: {
         background: 'hsl(var(--background))',
@@ -120,6 +120,7 @@ const config: Config = {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
+        'squircle': '20px',
       },
       keyframes: {
         'accordion-down': {
