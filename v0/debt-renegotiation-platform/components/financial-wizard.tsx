@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, ArrowRight, ArrowLeft, SkipForward } from "lucide-react";
+import { Plus, ArrowRight, ArrowLeft, SkipForward, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
@@ -14,7 +14,7 @@ interface FinancialData {
     gastosVariaveis: number[];
 }
 
-interface FinancialWizardProps {
+export interface FinancialWizardProps {
     onComplete: (data: FinancialData) => void;
 }
 
@@ -96,6 +96,10 @@ export function FinancialWizard({ onComplete }: FinancialWizardProps) {
         }
     };
 
+    const handleRemoveItem = (index: number) => {
+        setItems(items.filter((_, i) => i !== index));
+    };
+
     const saveAndAdvance = (newData: FinancialData) => {
         setHistory([...history, { data: { ...data }, inputValue, items: [...items] }]);
         setData(newData);
@@ -112,6 +116,13 @@ export function FinancialWizard({ onComplete }: FinancialWizardProps) {
     const handleNext = () => {
         const num = parseFloat(inputValue.replace(/\./g, "").replace(",", ".")) || 0;
         const newData = { ...data };
+
+        // If user typed a number but didn't add it yet in a multiple step, add it now?
+        // Behavior decided: 
+        // If multiple and input > 0: Add it and stay? Or add it and continue? 
+        // Let's Add it and continue for smoother flow if they just typed one thing.
+        // If multiple and input == 0: Just continue with existing items.
+
         if (step.multiple) {
             const allItems = num > 0 ? [...items, num] : items;
             (newData as any)[step.key] = allItems;
@@ -119,6 +130,23 @@ export function FinancialWizard({ onComplete }: FinancialWizardProps) {
             (newData as any)[step.key] = num;
         }
         saveAndAdvance(newData);
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            const num = parseFloat(inputValue.replace(/\./g, "").replace(",", ".")) || 0;
+
+            if (step.multiple) {
+                if (num > 0) {
+                    handleAddItem();
+                } else {
+                    handleNext();
+                }
+            } else {
+                handleNext();
+            }
+        }
     };
 
     const handleSkip = () => {
@@ -188,12 +216,19 @@ export function FinancialWizard({ onComplete }: FinancialWizardProps) {
                     {step.multiple && items.length > 0 && (
                         <div className="flex flex-wrap gap-2 animate-in slide-in-from-bottom-2">
                             {items.map((item, i) => (
-                                <span
+                                <div
                                     key={i}
-                                    className="px-4 py-2 rounded-full bg-accent/20 text-accent-foreground border border-accent/30 text-sm font-semibold shadow-sm"
+                                    className="group flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent/20 text-accent-foreground border border-accent/30 text-sm font-semibold shadow-sm transition-colors hover:bg-destructive/10 hover:border-destructive/30 hover:text-destructive"
                                 >
-                                    R$ {item.toFixed(2).replace(".", ",")}
-                                </span>
+                                    <span>R$ {item.toFixed(2).replace(".", ",")}</span>
+                                    <button
+                                        onClick={() => handleRemoveItem(i)}
+                                        className="p-0.5 rounded-full hover:bg-destructive/20 transition-colors"
+                                    >
+                                        <X className="w-3 h-3" />
+                                        <span className="sr-only">Remover</span>
+                                    </button>
+                                </div>
                             ))}
                         </div>
                     )}
@@ -207,6 +242,7 @@ export function FinancialWizard({ onComplete }: FinancialWizardProps) {
                                 type="text"
                                 value={inputValue}
                                 onChange={(e) => setInputValue(formatCurrency(e.target.value))}
+                                onKeyDown={handleKeyDown}
                                 placeholder="0,00"
                                 className="h-14 pl-12 text-2xl font-bold border-muted-foreground/20 focus-visible:ring-primary shadow-sm"
                             />

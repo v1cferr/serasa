@@ -9,12 +9,19 @@ import {
   XAxis,
   YAxis,
   CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
+  Label,
 } from "recharts";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  ChartConfig,
+  ChartLegend,
+  ChartLegendContent
+} from "@/components/ui/chart";
+import { TrendingUp, TrendingDown, DollarSign, Wallet, CreditCard } from "lucide-react";
 
 interface FinancialData {
   divida: number;
@@ -23,14 +30,6 @@ interface FinancialData {
   gastosFixos: number[];
   gastosVariaveis: number[];
 }
-
-const COLORS = [
-  "hsl(330,78%,49%)",
-  "hsl(220,20%,15%)",
-  "hsl(220,10%,45%)",
-  "hsl(330,78%,70%)",
-  "hsl(200,60%,50%)",
-];
 
 export function FinancialResults({ data }: { data: FinancialData }) {
   const totalRendaFixa = data.rendaFixa.reduce((a, b) => a + b, 0);
@@ -41,32 +40,65 @@ export function FinancialResults({ data }: { data: FinancialData }) {
   const totalGastos = totalGastosFixos + totalGastosVariaveis;
   const sobra = totalRenda - totalGastos;
 
-  const percFixos =
-    totalRenda > 0 ? ((totalGastosFixos / totalRenda) * 100).toFixed(1) : "0";
-  const percVariaveis =
-    totalRenda > 0
-      ? ((totalGastosVariaveis / totalRenda) * 100).toFixed(1)
-      : "0";
-  const percSobra =
-    totalRenda > 0 ? ((Math.max(sobra, 0) / totalRenda) * 100).toFixed(1) : "0";
+  const percFixos = totalRenda > 0 ? (totalGastosFixos / totalRenda) * 100 : 0;
+  const percVariaveis = totalRenda > 0 ? (totalGastosVariaveis / totalRenda) * 100 : 0;
+  const percSobra = totalRenda > 0 ? (Math.max(sobra, 0) / totalRenda) * 100 : 0;
 
+  // Pie Chart Data
   const pieData = [
-    { name: "Gastos Fixos", value: totalGastosFixos },
-    { name: "Gastos Variáveis", value: totalGastosVariaveis },
-    { name: sobra >= 0 ? "Margem de Segurança" : "Déficit", value: Math.abs(sobra) },
+    { name: "fixos", value: totalGastosFixos, fill: "var(--color-fixos)" },
+    { name: "variaveis", value: totalGastosVariaveis, fill: "var(--color-variaveis)" },
+    { name: "sobra", value: Math.max(sobra, 0), fill: "var(--color-sobra)" },
   ];
 
+  const pieChartConfig = {
+    value: {
+      label: "Valor",
+    },
+    fixos: {
+      label: "Gastos Fixos",
+      color: "hsl(var(--chart-1))",
+    },
+    variaveis: {
+      label: "Gastos Variáveis",
+      color: "hsl(var(--chart-2))",
+    },
+    sobra: {
+      label: "Margem (Sobra)",
+      color: "hsl(var(--chart-3))",
+    },
+  } satisfies ChartConfig;
+
+  // Bar Chart Data (Comparison)
   const barData = [
-    { name: "Ideal", fixos: 50, variaveis: 30, investimento: 20 },
     {
-      name: "Seu Perfil",
-      fixos: parseFloat(percFixos),
-      variaveis: parseFloat(percVariaveis),
-      investimento: parseFloat(percSobra),
+      category: "Ideal",
+      fixos: 50,
+      variaveis: 30,
+      sobra: 20,
+    },
+    {
+      category: "Você",
+      fixos: parseFloat(percFixos.toFixed(1)),
+      variaveis: parseFloat(percVariaveis.toFixed(1)),
+      sobra: parseFloat(percSobra.toFixed(1)),
     },
   ];
 
-
+  const barChartConfig = {
+    fixos: {
+      label: "Gastos Fixos (%)",
+      color: "hsl(var(--chart-1))",
+    },
+    variaveis: {
+      label: "Gastos Variáveis (%)",
+      color: "hsl(var(--chart-2))",
+    },
+    sobra: {
+      label: "Investimentos/Sobra (%)",
+      color: "hsl(var(--chart-3))",
+    },
+  } satisfies ChartConfig;
 
   const fmt = (v: number) =>
     `R$ ${v
@@ -77,7 +109,7 @@ export function FinancialResults({ data }: { data: FinancialData }) {
   return (
     <div className="w-full max-w-7xl mx-auto p-4 flex flex-col gap-8 animate-in fade-in duration-700">
       <div className="text-center space-y-2">
-        <h2 className="text-3xl font-bold text-experian-dark-blue dark:text-white">
+        <h2 className="text-3xl font-bold text-foreground">
           Seu Panorama Financeiro
         </h2>
         <p className="text-muted-foreground">
@@ -91,33 +123,41 @@ export function FinancialResults({ data }: { data: FinancialData }) {
           {
             label: "Renda Total",
             value: fmt(totalRenda),
-            color: "text-green-600",
+            icon: Wallet,
+            color: "text-emerald-600 dark:text-emerald-400",
+            bg: "bg-emerald-50 dark:bg-emerald-950/20",
           },
           {
             label: "Gastos Totais",
             value: fmt(totalGastos),
-            color: "text-orange-600",
+            icon: TrendingDown,
+            color: "text-rose-600 dark:text-rose-400",
+            bg: "bg-rose-50 dark:bg-rose-950/20",
           },
           {
-            label: sobra >= 0 ? "Margem de Segurança" : "Déficit",
+            label: sobra >= 0 ? "Sobra Mensal" : "Déficit Mensal",
             value: fmt(Math.abs(sobra)),
-            color: sobra >= 0 ? "text-green-600" : "text-red-600",
+            icon: sobra >= 0 ? TrendingUp : TrendingDown,
+            color: sobra >= 0 ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400",
+            bg: sobra >= 0 ? "bg-emerald-50 dark:bg-emerald-950/20" : "bg-rose-50 dark:bg-rose-950/20",
           },
           {
             label: "Dívida Ativa",
             value: fmt(data.divida),
-            color: "text-red-600",
+            icon: CreditCard,
+            color: "text-amber-600 dark:text-amber-400",
+            bg: "bg-amber-50 dark:bg-amber-950/20",
           },
         ].map((item, i) => (
-          <Card
-            key={i}
-            className="text-center shadow-md hover:shadow-lg transition-shadow"
-          >
-            <CardContent className="pt-6">
+          <Card key={i} className="shadow-sm border-2 overflow-hidden hover:border-primary/50 transition-colors">
+            <CardContent className="p-6 flex flex-col items-center justify-center text-center gap-2">
+              <div className={cn("p-3 rounded-full mb-1", item.bg)}>
+                <item.icon className={cn("w-6 h-6", item.color)} />
+              </div>
               <p className="text-sm text-muted-foreground font-medium uppercase tracking-wide">
                 {item.label}
               </p>
-              <p className={cn("text-2xl font-bold mt-2", item.color)}>
+              <p className={cn("text-xl md:text-2xl font-bold", item.color)}>
                 {item.value}
               </p>
             </CardContent>
@@ -127,85 +167,105 @@ export function FinancialResults({ data }: { data: FinancialData }) {
 
       <div className="grid md:grid-cols-2 gap-8">
         {/* Pie Chart */}
-        <Card className="shadow-md">
-          <CardHeader>
-            <CardTitle className="text-xl font-bold text-center">
-              Distribuição de Gastos
-            </CardTitle>
+        <Card className="flex flex-col shadow-md">
+          <CardHeader className="items-center pb-0">
+            <CardTitle>Distribuição de Gastos</CardTitle>
+            <CardDescription>Onde seu dinheiro está indo este mês</CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="h-[300px] w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={pieData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={60}
-                    outerRadius={100}
-                    dataKey="value"
-                    paddingAngle={5}
-                    label={({ name, percent }) =>
-                      `${(percent * 100).toFixed(0)}%`
-                    }
-                  >
-                    {pieData.map((_, i) => (
-                      <Cell key={i} fill={COLORS[i % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip formatter={(v: number) => fmt(v)} />
-                  <Legend />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
+          <CardContent className="flex-1 pb-0 min-h-[300px]">
+            <ChartContainer config={pieChartConfig} className="mx-auto aspect-square max-h-[300px] w-full">
+              <PieChart>
+                <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
+                <Pie
+                  data={pieData}
+                  dataKey="value"
+                  nameKey="name"
+                  innerRadius={60}
+                  strokeWidth={5}
+                >
+                  <Label
+                    content={({ viewBox }) => {
+                      if (viewBox && "cx" in viewBox && "cy" in viewBox) {
+                        return (
+                          <text
+                            x={viewBox.cx}
+                            y={viewBox.cy}
+                            textAnchor="middle"
+                            dominantBaseline="middle"
+                          >
+                            <tspan
+                              x={viewBox.cx}
+                              y={viewBox.cy}
+                              className="fill-foreground text-2xl sm:text-3xl font-bold"
+                            >
+                              {totalGastos.toLocaleString("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 })}
+                            </tspan>
+                            <tspan
+                              x={viewBox.cx}
+                              y={(viewBox.cy || 0) + 24}
+                              className="fill-muted-foreground text-xs sm:text-sm"
+                            >
+                              Gastos
+                            </tspan>
+                          </text>
+                        )
+                      }
+                    }}
+                  />
+                </Pie>
+                <ChartLegend
+                  content={<ChartLegendContent nameKey="name" />}
+                  className="-translate-y-2 flex-wrap gap-2 [&>*]:basis-1/4 [&>*]:justify-center text-xs"
+                />
+              </PieChart>
+            </ChartContainer>
           </CardContent>
+          <CardFooter className="flex-col gap-2 text-sm pt-4">
+            <div className="flex items-center gap-2 font-medium leading-none text-center">
+              {sobra >= 0 ? (
+                <>Sua saúde financeira está positiva <TrendingUp className="h-4 w-4 text-emerald-500" /></>
+              ) : (
+                <>Atenção aos gastos excessivos <TrendingDown className="h-4 w-4 text-rose-500" /></>
+              )}
+            </div>
+          </CardFooter>
         </Card>
 
         {/* Bar Chart - 50/30/20 */}
-        <Card className="shadow-md">
-          <CardHeader>
-            <CardTitle className="text-xl font-bold text-center">
-              Índice de Sobrevivência
-            </CardTitle>
+        <Card className="flex flex-col shadow-md">
+          <CardHeader className="items-center pb-0">
+            <CardTitle>Comparativo Ideal (50/30/20)</CardTitle>
+            <CardDescription>Sua distribuição vs Recomendação</CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="h-[300px] w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={barData} layout="vertical">
-                  <CartesianGrid strokeDasharray="3 3" horizontal={false} />
-                  <XAxis type="number" unit="%" />
-                  <YAxis dataKey="name" type="category" width={80} />
-                  <Tooltip formatter={(v: number) => `${v.toFixed(1)}%`} />
-                  <Legend />
-                  <Bar
-                    dataKey="fixos"
-                    name="Fixos (50%)"
-                    stackId="a"
-                    fill={COLORS[0]}
-                    radius={[0, 4, 4, 0]}
-                  />
-                  <Bar
-                    dataKey="variaveis"
-                    name="Variáveis (30%)"
-                    stackId="a"
-                    fill={COLORS[1]}
-                    radius={[0, 4, 4, 0]}
-                  />
-                  <Bar
-                    dataKey="investimento"
-                    name="Invest. (20%)"
-                    stackId="a"
-                    fill={COLORS[4]}
-                    radius={[0, 4, 4, 0]}
-                  />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
+          <CardContent className="flex-1 pb-0 min-h-[300px]">
+            <ChartContainer config={barChartConfig} className="max-h-[300px] w-full">
+              <BarChart accessibilityLayer data={barData} layout="vertical" margin={{ left: 0, right: 0, top: 0, bottom: 0 }}>
+                <CartesianGrid horizontal={false} />
+                <YAxis
+                  dataKey="category"
+                  type="category"
+                  tickLine={false}
+                  tickMargin={10}
+                  axisLine={false}
+                  width={50}
+                  className="font-bold text-xs sm:text-sm"
+                />
+                <XAxis type="number" hide />
+                <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dashed" />} />
+                <ChartLegend content={<ChartLegendContent />} className="flex-wrap gap-2 text-xs" />
+                <Bar dataKey="fixos" fill="var(--color-fixos)" radius={[0, 4, 4, 0]} stackId="a" />
+                <Bar dataKey="variaveis" fill="var(--color-variaveis)" radius={[0, 4, 4, 0]} stackId="a" />
+                <Bar dataKey="sobra" fill="var(--color-sobra)" radius={[0, 4, 4, 0]} stackId="a" />
+              </BarChart>
+            </ChartContainer>
           </CardContent>
+          <CardFooter className="flex-col gap-2 text-sm pt-4">
+            <div className="flex items-center gap-2 font-medium leading-none text-center">
+              50% Gastos Fixos, 30% Variáveis, 20% Investimentos.
+            </div>
+          </CardFooter>
         </Card>
       </div>
-
-
     </div>
   );
 }

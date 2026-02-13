@@ -99,8 +99,17 @@ const FaqColumn = ({
 );
 
 const EducationSections = () => (
-  <section id="educacao" className="w-full py-16">
-    <div className="max-w-[1366px] mx-auto px-[3%]">
+  <section id="educacao" className="w-full py-16 relative overflow-hidden">
+    <div
+      className="absolute inset-0 pointer-events-none"
+      style={{
+        backgroundImage: "url('/education-bg.png')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        opacity: 0.15
+      }}
+    />
+    <div className="max-w-[1366px] mx-auto px-[3%] relative z-10">
       <h2 className="text-3xl font-bold text-foreground text-center mb-10">
         Educação Financeira
       </h2>

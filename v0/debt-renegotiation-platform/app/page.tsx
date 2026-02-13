@@ -5,8 +5,8 @@ import { SiteHeader } from "@/components/site-header";
 import { HeroCarousel } from "@/components/hero-carousel";
 import { FinancialWizard } from "@/components/financial-wizard";
 import { ChatCTA } from "@/components/chat-cta";
-import { MaslowMethod } from "@/components/maslow-method";
-import { BudgetSimulator } from "@/components/budget-simulator";
+// import { MaslowMethod } from "@/components/maslow-method";
+// import { BudgetSimulator } from "@/components/budget-simulator";
 import { DashboardPreview } from "@/components/dashboard-preview";
 import { FloatingActionButton } from "@/components/floating-action-button";
 import { ChatSidebar } from "@/components/chat-sidebar";
@@ -52,9 +52,9 @@ export default function Page() {
           {/* <section id="metodo">
             <MaslowMethod />
           </section> */}
-          <section id="simulador">
+          {/* <section id="simulador">
             <BudgetSimulator />
-          </section>
+          </section> */}
           <EducationSections />
         </main>
         <SiteFooter />
