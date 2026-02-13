@@ -1,41 +1,57 @@
 
 
-# Alterações na Landing Page "Endividamento"
+# Alteracoes na Landing Page
 
-## 1. Carrossel Hero (Seção 1)
-- Remover o `mx-4` e `rounded-lg` do container do carrossel
-- Alterar para `max-w-full` (100% da largura horizontal)
-- O carrossel ocupará toda a largura da tela
+## 1. Hero Carousel - Imagens de fundo
+Adicionar imagens ilustrativas de fundo em cada slide do carrossel. Como nao temos imagens reais, usaremos SVG patterns/ilustracoes inline combinadas com os gradientes existentes para criar fundos visuais mais ricos (icones grandes semi-transparentes relacionados ao tema de cada slide). O conteudo textual permanece inalterado.
 
-## 2. Wizard Financeiro (Seção 2)
-- Adicionar botão "Voltar" ao lado dos botões "Próximo" e "Pular" (visível a partir do passo 2)
-- Ao clicar em "Voltar", restaurar os dados do passo anterior no formulário
-- Substituir os emojis do lado direito por ilustrações SVG inline como plano de fundo (gradientes temáticos com ícones grandes), mantendo o texto descritivo sobre elas
+## 2. Remover Piramide de Maslow da Secao 2
+Remover o bloco "Piramide de Maslow Financeira" do `FinancialResults.tsx` (linhas 109-130), mantendo os cards de resumo, grafico de pizza e grafico de barras 50/30/20.
 
-## 3. Seções de Educação (Seções 4, 5 e 6)
-Reorganizar completamente o `EducationSections.tsx`:
+## 3. Secao 4 - Reestruturar como FAQ em 3 colunas
+Substituir completamente o `EducationSections.tsx` por uma unica secao com:
 
-**Seção 4 — "Educação Financeira"** (tema: Investimentos)
-- 6 cards na ordem: Educação, Liquidez diária, Poupança, Patrimônio, Ações, Empreendimento
-- Grid de 3 colunas (2 linhas)
+- Titulo `<h2>` "Educacao Financeira"
+- Layout de 3 colunas (33.333% cada)
+- Cada coluna usa o componente `Accordion` (Radix UI, ja instalado) no estilo FAQ
 
-**Seção 5 — "Como funciona?"** (temas explicativos)
-- 6 cards: Inflação, CDB e CDI, Taxas e juros, Empréstimos, Amortização, Financiamento
+**Coluna 1 - Investimentos:**
+1. Educacao
+2. Liquidez diaria
+3. Poupanca
+4. Patrimonio
+5. Acoes
+6. Empreendimento
 
-**Seção 6 — "Reserva de Emergência"**
-- Layout diferenciado: área principal explicando a importância + cards com dicas práticas de como criar/aumentar a reserva
+**Coluna 2 - Conceitos:**
+1. Inflacao
+2. CDB e CDI
+3. Taxas e juros
+4. Emprestimos
+5. Amortizacao
 
-## Detalhes Técnicos
+**Coluna 3 - Protecao:**
+1. Reserva de Emergencia
+2. Piramide de Maslow
+
+Cada item do FAQ tera titulo clicavel e conteudo explicativo que expande ao clicar.
+
+## Detalhes Tecnicos
 
 ### HeroCarousel.tsx
-- Linha do container: remover `rounded-lg mx-4`, adicionar `max-w-full`
+- Adicionar elementos SVG decorativos (circulos, linhas, icones) como background em cada slide, posicionados com `absolute` e `opacity` baixa para nao interferir no texto
 
-### FinancialWizard.tsx
-- Novo botão "Voltar" com ícone `ArrowLeft`
-- Armazenar histórico de dados por step para restauração ao voltar
-- Lado direito: trocar o `div` com emoji por um container com background SVG/gradiente ilustrativo + texto sobreposto
+### FinancialResults.tsx
+- Remover linhas 46-52 (array `maslowLevels`)
+- Remover linhas 109-130 (JSX da piramide)
 
 ### EducationSections.tsx
-- Reescrever os arrays de cards com os novos temas e ordem
-- Seção 6 terá estrutura própria (não reutiliza o componente `Section` genérico): bloco hero + grid de dicas práticas
+- Reescrever completamente usando o componente `Accordion` de `@/components/ui/accordion`
+- Uma unica `<section>` com `<h2>Educacao Financeira</h2>`
+- Grid de 3 colunas responsivo (`grid-cols-1 md:grid-cols-3`)
+- Cada coluna contem um `Accordion` com os itens FAQ correspondentes
+- Mover o conteudo da Piramide de Maslow (anteriormente na secao 2) para o FAQ da coluna 3
+
+### Index.tsx
+- Atualizar links de navegacao na navbar se necessario (remover ancoras para secoes que nao existem mais como "como-funciona" e "reserva")
 

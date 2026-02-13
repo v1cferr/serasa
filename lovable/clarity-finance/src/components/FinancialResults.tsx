@@ -42,15 +42,6 @@ const FinancialResults = ({ data }: { data: FinancialData }) => {
     },
   ];
 
-  // Maslow pyramid levels
-  const maslowLevels = [
-    { label: "Autorrealização", desc: "Investimentos e crescimento", width: "30%", filled: sobra > totalRenda * 0.15 },
-    { label: "Estima", desc: "Lazer e bem-estar", width: "45%", filled: totalGastosVariaveis > 0 },
-    { label: "Social", desc: "Educação e saúde", width: "60%", filled: totalGastosFixos > 0 },
-    { label: "Segurança", desc: "Moradia e renda fixa", width: "75%", filled: totalRendaFixa > 0 },
-    { label: "Fisiológica", desc: "Alimentação e necessidades básicas", width: "90%", filled: totalRenda > 0 },
-  ];
-
   const fmt = (v: number) => `R$ ${v.toFixed(2).replace(".", ",").replace(/\B(?=(\d{3})+(?!\d))/g, ".")}`;
 
   return (
@@ -106,28 +97,6 @@ const FinancialResults = ({ data }: { data: FinancialData }) => {
         </div>
       </div>
 
-      {/* Maslow Pyramid */}
-      <div className="card-shadow bg-card rounded-lg p-6">
-        <h3 className="text-lg font-bold text-foreground mb-6 text-center">Pirâmide de Maslow Financeira</h3>
-        <div className="flex flex-col items-center gap-2">
-          {maslowLevels.map((level, i) => (
-            <div
-              key={i}
-              className={`flex items-center justify-center rounded-sm py-3 px-4 text-center transition-all cursor-default ${
-                level.filled
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-secondary text-muted-foreground"
-              }`}
-              style={{ width: level.width }}
-            >
-              <div>
-                <p className="font-bold text-sm">{level.label}</p>
-                <p className="text-xs opacity-80">{level.desc}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
     </div>
   );
 };

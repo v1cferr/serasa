@@ -5,8 +5,6 @@ const navLinks = [
   { label: "Análise", href: "#analise" },
   { label: "Chatbot", href: "#chatbot" },
   { label: "Educação", href: "#educacao" },
-  { label: "Investimentos", href: "#investimentos" },
-  { label: "Crédito", href: "#credito" },
 ];
 
 const Navbar = () => {
