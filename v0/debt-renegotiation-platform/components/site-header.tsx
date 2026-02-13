@@ -4,6 +4,7 @@ import { Shield, Sun, Moon, MessageCircle, Menu, X } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { useChat } from "@/components/chat-context";
+import { Logo } from "@/components/logo";
 
 export function SiteHeader() {
   const { theme, setTheme } = useTheme();
@@ -30,13 +31,8 @@ export function SiteHeader() {
             href="/"
             className="flex items-center gap-2 transition-opacity hover:opacity-80"
           >
-            <div className="relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl">
-              {/* TODO: Transformar essa logo.png em SVG */}
-              <img
-                src="/logo.png"
-                alt="Logo Serasa Humanizado"
-                className="h-full w-full object-cover"
-              />
+            <div className="relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl bg-primary/10">
+              <Logo className="h-7 w-7 text-primary" />
             </div>
             <span className="text-lg font-bold text-foreground">
               Serasa <span className="text-primary">Humanizado</span>

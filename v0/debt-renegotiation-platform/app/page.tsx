@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import { SiteHeader } from "@/components/site-header";
 import { HeroCarousel } from "@/components/hero-carousel";
 import { FinancialWizard } from "@/components/financial-wizard";
@@ -9,17 +12,38 @@ import { FloatingActionButton } from "@/components/floating-action-button";
 import { ChatSidebar } from "@/components/chat-sidebar";
 import { ChatProvider } from "@/components/chat-context";
 import { SiteFooter } from "@/components/site-footer";
+import { FinancialResults } from "@/components/financial-results";
+import { Button } from "@/components/ui/button";
 
 export default function Page() {
+  const [financialData, setFinancialData] = useState<any>(null);
+
   return (
     <ChatProvider>
       <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
         <SiteHeader />
         <main>
           <HeroCarousel />
-          <div className="bg-background">
-            <FinancialWizard />
+
+          <div className="bg-background min-h-[600px] py-8">
+            {!financialData ? (
+              <FinancialWizard onComplete={setFinancialData} />
+            ) : (
+              <div className="flex flex-col gap-8 pb-12">
+                <FinancialResults data={financialData} />
+                <div className="text-center">
+                  <Button
+                    onClick={() => setFinancialData(null)}
+                    variant="outline"
+                    className="border-experian-dark-blue text-experian-dark-blue hover:bg-experian-dark-blue/5"
+                  >
+                    Refazer Análise
+                  </Button>
+                </div>
+              </div>
+            )}
           </div>
+
           <ChatCTA />
           <section id="metodo">
             <MaslowMethod />

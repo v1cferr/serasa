@@ -24,6 +24,7 @@
 
 - Prompts: <https://docs.google.com/document/d/1NLvdCPEV93_R1j7E7-el--4ujlW72pPnj8pVGzuoJ5M/edit?usp=sharing>
 - Lovable: <https://lovable.dev/projects/504e0190-420d-4dff-aea5-fdc37755bf25>
+  - <https://github.com/lcsjm/clarity-finance>
   - Convite: <https://lovable.dev/projects/504e0190-420d-4dff-aea5-fdc37755bf25?magic_link=mc_a94d1d5c-3fb9-476c-b954-b354ca0add4f>
 
 ## Victor
@@ -31,3 +32,7 @@
 Gerado no [v0](https://v0.app/) com [contas temporárias](https://temp-mail.org/) (utilizado para pegar o código-fonte):
 
 - [v0/debt](./v0/debt-renegotiation-platform/)
+
+### Fazer
+
+- [X] Transformar a logo em SVG/componente React para melhor manipulação
